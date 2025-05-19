@@ -1,0 +1,6 @@
+*.jar
+*.class
+*.log
+*.zip
+.idea/
+.DS_Store

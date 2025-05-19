@@ -18,7 +18,9 @@ public class DBUtil {
             url = prop.getProperty("db.url");
             username = prop.getProperty("db.username");
             password = prop.getProperty("db.password");
-            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Class.forName("com.mysql.cj.jdbc.Driver"); // JDBC 4.0 이상이면 생략 가능
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -26,5 +28,18 @@ public class DBUtil {
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
+    }
+
+    public static void testConnection() {
+        try (Connection conn = getConnection()) {
+            if (conn != null && !conn.isClosed()) {
+                System.out.println("✅ DB 연결 성공!");
+            } else {
+                System.out.println("❌ DB 연결 실패...");
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ DB 연결 중 오류 발생:");
+            e.printStackTrace();
+        }
     }
 }
