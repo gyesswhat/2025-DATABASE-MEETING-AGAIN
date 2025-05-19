@@ -50,3 +50,35 @@
 - **test**: 테스트 코드 추가/수정
 - **perf**: 성능 개선
 - **build**: 빌드 관련 설정 수정 (예: gradle, jar 설정 등)
+
+## 🌿 브랜치 네이밍 규칙
+
+작업자는 각자 담당하는 기능별로 브랜치를 만들되,  
+다음 형식을 따릅니다:
+
+### ✅ 브랜치명 형식
+
+```
+feature/기능-이름
+```
+
+### ✅ 예시 
+실제 RnR과 다릅니다, 참고용으로 봐주세요.
+
+| 작업자   | 담당 기능    | 브랜치명                     |
+|----------|--------------|------------------------------|
+| woorim   | 로그인        | feature/login-woorim         |
+| sumin    | 사용자 기능   | feature/member-sumin         |
+| yoonji   | 관리자 기능   | feature/admin-yoonji         |
+| gyeore   | 시스템/공통   | feature/system-gyeore        |
+
+### ✅ 브랜치 생성 명령어 예시
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b feature/login-woorim
+git push -u origin feature/login-woorim
+```
+
+> `-u` 옵션은 해당 로컬 브랜치와 원격 브랜치를 연결시켜 줍니다.
