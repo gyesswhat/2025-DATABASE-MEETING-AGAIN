@@ -33,12 +33,12 @@ public class DBUtil {
     public static void testConnection() {
         try (Connection conn = getConnection()) {
             if (conn != null && !conn.isClosed()) {
-                System.out.println("✅ DB 연결 성공!");
+                System.out.println("DB 연결 성공!");
             } else {
-                System.out.println("❌ DB 연결 실패...");
+                System.out.println("DB 연결 실패...");
             }
         } catch (SQLException e) {
-            System.out.println("❌ DB 연결 중 오류 발생:");
+            System.out.println("DB 연결 중 오류 발생:");
             e.printStackTrace();
         }
     }
