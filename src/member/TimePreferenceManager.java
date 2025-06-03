@@ -8,21 +8,24 @@ import java.time.LocalDateTime;
 public class TimePreferenceManager {
 
     // 회의 가능 시간 등록
-    public void save(TimePreference tp) {
-        String sql = "INSERT INTO timeslot (user_id, team_id, startTime, endTime, priority) VALUES (?, ?, ?, ?, ?)";
+    public boolean save(TimePreference tp) {
+        String sql = "INSERT INTO timeslot (user_id, team_id, start_time, end_time, priority) VALUES (?, ?, ?, ?, ?)";
+
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, tp.getUserId());
-            stmt.setInt(2, tp.getTeamId());
-            stmt.setTimestamp(3, Timestamp.valueOf(tp.getStartTime()));
-            stmt.setTimestamp(4, Timestamp.valueOf(tp.getEndTime()));
-            stmt.setInt(5, tp.getPriority());
+            pstmt.setInt(1, tp.getUserId());
+            pstmt.setInt(2, tp.getTeamId());
+            pstmt.setTimestamp(3, Timestamp.valueOf(tp.getStartTime()));
+            pstmt.setTimestamp(4, Timestamp.valueOf(tp.getEndTime()));
+            pstmt.setInt(5, tp.getPriority());
 
-            stmt.executeUpdate();
-            System.out.println("✔ 회의 가능 시간이 저장되었습니다.");
+            pstmt.executeUpdate();
+            return true;
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("시간 등록 실패: " + e.getMessage());
+            return false;
         }
     }
 
