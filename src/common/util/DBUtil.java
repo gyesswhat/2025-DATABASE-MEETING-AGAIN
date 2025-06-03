@@ -1,6 +1,6 @@
 package common.util;
 
-import java.sql.*;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -13,15 +13,22 @@ public class DBUtil {
 
     static {
         try (InputStream input = DBUtil.class.getClassLoader().getResourceAsStream("db.properties")) {
-            Properties prop = new Properties();
-            prop.load(input);
-            url = prop.getProperty("db.url");
-            username = prop.getProperty("db.username");
-            password = prop.getProperty("db.password");
+            if (input == null) {
+                System.out.println("❌ db.properties 파일을 classpath에서 찾을 수 없습니다.");
+            } else {
+                Properties prop = new Properties();
+                prop.load(input);
+                url = prop.getProperty("db.url");
+                username = prop.getProperty("db.username");
+                password = prop.getProperty("db.password");
 
-            Class.forName("com.mysql.cj.jdbc.Driver"); // JDBC 4.0 이상이면 생략 가능
+                System.out.println("✅ DB 설정 로딩 성공");
+
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            }
 
         } catch (Exception e) {
+            System.out.println("❌ DB 설정 로딩 중 오류 발생");
             e.printStackTrace();
         }
     }
@@ -31,12 +38,17 @@ public class DBUtil {
     }
 
     public static void testConnection() {
+        System.out.println("🧪 testConnection() 진입"); // 로그 추가
+
         try (Connection conn = getConnection()) {
+            System.out.println("🔗 getConnection() 반환됨");
+
             if (conn != null && !conn.isClosed()) {
                 System.out.println("DB 연결 성공!");
             } else {
                 System.out.println("DB 연결 실패...");
             }
+
         } catch (SQLException e) {
             System.out.println("DB 연결 중 오류 발생:");
             e.printStackTrace();
