@@ -1,9 +1,11 @@
 package app;
 
 import common.util.DBUtil;
-import login.LoginView;
 import login.LoginController;
 import login.AuthService;
+import login.LoginResult;
+import login.RegisterResult;
+import login.UsernameCheckResult;
 
 public class Main {
 
@@ -14,10 +16,7 @@ public class Main {
 		System.out.println("🔐 로그인 시스템 시작");
 
 		try {
-			// LoginView를 통한 콘솔 테스트
-			LoginView loginView = new LoginView();
-			loginView.start();
-
+			// 로그인 시스템 로직 (LoginView 관련 코드 제거됨)
 		} catch (Exception e) {
 			System.err.println("❌ 프로그램 실행 중 오류 발생: " + e.getMessage());
 			e.printStackTrace();
@@ -35,7 +34,7 @@ public class Main {
 		LoginController loginController = new LoginController();
 
 		// 로그인 예제
-		LoginController.LoginResult loginResult = loginController.login("alice", "pass123");
+		LoginResult loginResult = loginController.login("alice", "pass123");
 		if (loginResult.isSuccess()) {
 			System.out.println("✅ 로그인 성공: " + loginResult.getUser().getUsername());
 		} else {
@@ -43,7 +42,7 @@ public class Main {
 		}
 
 		// 회원가입 예제
-		LoginController.RegisterResult registerResult =
+		RegisterResult registerResult =
 				loginController.register("newuser", "password", "member", "C-Team");
 		if (registerResult.isSuccess()) {
 			System.out.println("✅ 회원가입 성공");
@@ -52,16 +51,12 @@ public class Main {
 		}
 
 		// 사용자명 중복 체크 예제
-		LoginController.UsernameCheckResult checkResult =
+		UsernameCheckResult checkResult =
 				loginController.checkUsername("alice");
 		System.out.println("사용자명 체크 결과: " + checkResult.getMessage());
 
-		// 권한 확인 예제
-		if (loginController.isCurrentUserAdmin()) {
-			System.out.println("현재 사용자는 관리자입니다.");
-		}
 
 		// 로그아웃 예제
-		loginController.logout();
+		// loginController.logout(); // Logout 메서드 미구현
 	}
 }
