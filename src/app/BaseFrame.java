@@ -139,11 +139,6 @@ public class BaseFrame extends JFrame{
     	headerPanel.add(addTimeBtn);
     }
     
-    public static void main(String [] args) {
-    	BaseFrame start=new BaseFrame();
-    	start.setVisible(true);
-    }
-    
     public void change(JPanel now, JPanel changed) {
 		now.removeAll();
 		changed.setBounds(12, 124, 1402, 803);
@@ -151,5 +146,10 @@ public class BaseFrame extends JFrame{
 		changed.setLayout(null);
 		revalidate();
 		repaint();
+    }
+
+	public static void main(String [] args) {
+    	BaseFrame start=new BaseFrame();
+    	start.setVisible(true);
     }
 }

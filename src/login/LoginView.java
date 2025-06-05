@@ -15,7 +15,8 @@ public class LogInView extends JPanel {
 	private JTextField textField;
 
 	public LogInView(BaseFrame baseframe) {
-
+	
+		
 		JLabel lblNewLabel_1 = new JLabel("회의실 예약 시스템에 로그인하세요");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setBounds(532, 348, 279, 15);
