@@ -3,39 +3,27 @@ package admin;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-import app.*;
+import app.BaseFrame;
 
-public class DashBoard extends AdminView{
-
+public class DashBoard extends AdminView {
 	public DashBoard(BaseFrame baseframe) {
 		super(baseframe);
-		
+
 		JLabel headLabel = new JLabel("대시보드");
 		headLabel.setBounds(12, 5, 134, 30);
 		adminPanel.add(headLabel);
-		
-		JLabel totalRoomLabel = new JLabel("New label");
-		totalRoomLabel.setBounds(12, 60, 285, 64);
-		TitledBorder totalRoomBorder = new TitledBorder("전체 회의실 수");
-		totalRoomBorder.setTitlePosition(TitledBorder.ABOVE_TOP);
-		totalRoomBorder.setTitleJustification(TitledBorder.LEADING);
-		totalRoomLabel.setBorder(totalRoomBorder);
-		adminPanel.add(totalRoomLabel);
-		
-		JLabel totalUserLabel = new JLabel("New label");
-		totalUserLabel.setBounds(309, 60, 285, 64);
-		TitledBorder totalUserBorder = new TitledBorder("전체 사용자 수");
-		totalUserBorder.setTitlePosition(TitledBorder.ABOVE_TOP);
-		totalUserBorder.setTitleJustification(TitledBorder.LEADING);
-		totalUserLabel.setBorder(totalUserBorder);
-		adminPanel.add(totalUserLabel);
-		
-		JLabel todayReservationLabel = new JLabel("New label");
-		todayReservationLabel.setBounds(606, 60, 285, 64);
-		TitledBorder todayReservationBorder = new TitledBorder("오늘 예약 건수");
-		todayReservationBorder.setTitlePosition(TitledBorder.ABOVE_TOP);
-		todayReservationBorder.setTitleJustification(TitledBorder.LEADING);
-		todayReservationLabel.setBorder(todayReservationBorder);
-		adminPanel.add(todayReservationLabel);
+
+		addStatLabel("전체 회의실 수", 12, 60);
+		addStatLabel("전체 사용자 수", 309, 60);
+		addStatLabel("오늘 예약 건수", 606, 60);
+	}
+
+	private void addStatLabel(String title, int x, int y) {
+		JLabel label = new JLabel("데이터 로딩 중...");
+		label.setBounds(x, y, 285, 64);
+		TitledBorder border = new TitledBorder(title);
+		border.setTitlePosition(TitledBorder.ABOVE_TOP);
+		label.setBorder(border);
+		adminPanel.add(label);
 	}
 }

@@ -1,36 +1,91 @@
 package leader;
 
-import java.util.List;
-import common.model.User;
 import common.model.Room;
-import common.model.Meeting;
+import common.util.DBUtil;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LeaderController {
-    private final MeetingCreator meetingCreator;
-    private final MemberAvailabilityViewer availabilityViewer;
 
-    public LeaderController() {
-        this.meetingCreator = new MeetingCreator();
-        this.availabilityViewer = new MemberAvailabilityViewer();
+    public List<Room> getAvailableRooms() {
+        List<Room> list = new ArrayList<>();
+        String sql = "SELECT * FROM room WHERE id NOT IN (SELECT room_id FROM reservation)";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Room r = new Room();
+                r.setId(rs.getInt("id"));
+                r.setName(rs.getString("name"));
+                r.setCapacity(rs.getInt("capacity"));
+                list.add(r);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
-    public boolean reserveMeeting(Meeting meeting) {
-        return meetingCreator.createMeeting(meeting);
+    public List<Room> getReservedRooms() {
+        List<Room> list = new ArrayList<>();
+        String sql = "SELECT r.* FROM room r JOIN reservation res ON r.id = res.room_id";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Room r = new Room();
+                r.setId(rs.getInt("id"));
+                r.setName(rs.getString("name"));
+                r.setCapacity(rs.getInt("capacity"));
+                list.add(r);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
-    public boolean cancelMeeting(int meetingId) {
-        return meetingCreator.deleteMeeting(meetingId);
+    public boolean reserveRoom(int roomId, int peopleCount, int userId) {
+        String sql = "INSERT INTO reservation (room_id, user_id, people_count) VALUES (?, ?, ?)";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, roomId);
+            stmt.setInt(2, userId);
+            stmt.setInt(3, peopleCount);
+            stmt.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public List<Room> getAvailableRooms(String date, int timeslotId) {
-        return meetingCreator.findAvailableRooms(date, timeslotId);
-    }
+    public boolean cancelReservation(int roomId) {
+        String sql = "DELETE FROM reservation WHERE room_id = ?";
 
-    public List<Meeting> getReservedMeetingsByTeam(int teamId) {
-        return meetingCreator.findMeetingsByTeam(teamId);
-    }
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-    public List<User> getAvailableMembers(String date, int timeSlotId) {
-        return availabilityViewer.getAvailableUsers(date, timeSlotId);
+            stmt.setInt(1, roomId);
+            stmt.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
