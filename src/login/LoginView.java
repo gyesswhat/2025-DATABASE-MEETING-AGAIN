@@ -11,10 +11,10 @@ import login.*;
 import member.*;
 import app.*;
 
-public class LogInView extends JPanel {
+public class LoginView extends JPanel {
 	private JTextField textField;
 
-	public LogInView(BaseFrame baseframe) {
+	public LoginView(BaseFrame baseframe) {
 
 		JLabel lblNewLabel_1 = new JLabel("회의실 예약 시스템에 로그인하세요");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
