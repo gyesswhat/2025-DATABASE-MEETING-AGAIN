@@ -28,7 +28,7 @@ public class AuthService {
 
         // 2) DB 조회 (user 테이블)
         String sql = "SELECT id, username, password, role, team_id " +
-                "FROM user WHERE username = ?";
+                "FROM db2025_user WHERE username = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -122,7 +122,7 @@ public class AuthService {
      * @return true (= 이미 존재 ), false (= 사용 가능 )
      */
     public boolean isUsernameExists(String username) {
-        String sql = "SELECT COUNT(*) AS cnt FROM user WHERE username = ?";
+        String sql = "SELECT COUNT(*) AS cnt FROM db2025_user WHERE username = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -148,7 +148,7 @@ public class AuthService {
      * @return team_id (존재하지 않으면 null 반환)
      */
     private Integer findTeamIdByName(String teamName) {
-        String sql = "SELECT id FROM team WHERE name = ?";
+        String sql = "SELECT id FROM db2025_team WHERE name = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 

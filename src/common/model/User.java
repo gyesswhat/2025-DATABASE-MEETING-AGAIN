@@ -4,7 +4,7 @@ package common.model;
 /**
  * user 테이블 구조에 대응하는 엔티티 클래스
  *
- * DB 테이블: meetingdb.user
+ * DB 테이블: db2025_user
  * ---------------------------------------------------------------------------------
  * | 컬럼 이름   | 자료형           | 제약 조건                            |
  * ---------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ package common.model;
  * | username    | VARCHAR(50)      | UNIQUE, NOT NULL                   |
  * | password    | VARCHAR(100)     | NOT NULL (SHA-256 해시된 값 저장)   |
  * | role        | VARCHAR(20)      | NOT NULL ("admin", "leader", "member") |
- * | team_id     | INT              | FOREIGN KEY (meetingdb.team.id)     |
+ * | team_id     | INT              | FOREIGN KEY (db2025team01.db2025_team.id)     |
  * ---------------------------------------------------------------------------------
  */
 public class User {

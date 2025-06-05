@@ -32,7 +32,7 @@ public class TimePreferenceManager {
     // 사용자별 회의 가능 시간 목록 조회
     public List<TimePreference> getAllByUser(int userId) {
         List<TimePreference> list = new ArrayList<>();
-        String sql = "SELECT * FROM timeslot WHERE user_id = ? ORDER BY priority ASC";
+        String sql = "SELECT * FROM db2025_timeslot WHERE user_id = ? ORDER BY priority ASC";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

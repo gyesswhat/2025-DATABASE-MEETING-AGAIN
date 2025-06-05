@@ -1,4 +1,5 @@
 package common.model;
+
 import javax.swing.*;
 
 import app.BaseFrame;
