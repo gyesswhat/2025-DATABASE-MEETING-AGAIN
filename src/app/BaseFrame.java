@@ -11,7 +11,7 @@ import member.*;
 public class BaseFrame extends JFrame{
 	public JPanel headerPanel;
 	public JPanel panel;
-	public LogInView lgv;
+	public LoginView lgv;
 	public SignUp suv;
 	public UserInfo uif;
 	public DashBoard dbv;
@@ -21,7 +21,7 @@ public class BaseFrame extends JFrame{
 	public MemberView mv;
 	
     public BaseFrame(){
-    	lgv=new LogInView(this);
+    	lgv=new LoginView(this);
     	suv=new SignUp(this);
     	uif=new UserInfo(this);
     	dbv=new DashBoard(this);
