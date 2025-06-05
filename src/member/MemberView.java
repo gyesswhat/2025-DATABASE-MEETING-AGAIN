@@ -7,6 +7,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.JOptionPane;
 
 import app.*;
+import common.model.UserView;
 
 public class MemberView extends UserView {
 	String date, time;
@@ -63,4 +64,8 @@ public class MemberView extends UserView {
     	addTimePanel.add(label);
     	addTimePanel.revalidate();
     }
+	public void displayMenu() {
+		// TODO Auto-generated method stub
+		
+	}
 }

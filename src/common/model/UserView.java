@@ -1,5 +1,8 @@
-package app;
+package common.model;
 import javax.swing.*;
+
+import app.BaseFrame;
+
 import java.awt.*;
 
 import java.awt.event.ActionListener;

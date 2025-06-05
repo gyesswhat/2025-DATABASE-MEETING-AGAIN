@@ -44,13 +44,13 @@ public class DBUtil {
             System.out.println("🔗 getConnection() 반환됨");
 
             if (conn != null && !conn.isClosed()) {
-                System.out.println("✅ DB 연결 성공!");
+                System.out.println("DB 연결 성공!");
             } else {
-                System.out.println("❌ DB 연결 실패...");
+                System.out.println("DB 연결 실패...");
             }
 
         } catch (SQLException e) {
-            System.out.println("❌ DB 연결 중 오류 발생:");
+            System.out.println("DB 연결 중 오류 발생:");
             e.printStackTrace();
         }
     }

@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import app.*;
+import common.model.UserView;
 
 public class LeaderView extends UserView {
 	private JTextField enabledRoomListField;

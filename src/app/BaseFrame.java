@@ -11,7 +11,7 @@ import member.*;
 public class BaseFrame extends JFrame{
 	public JPanel headerPanel;
 	public JPanel panel;
-	public LogInView lgv;
+	public LoginView lgv;
 	public SignUp suv;
 	public UserInfo uif;
 	public DashBoard dbv;
@@ -19,9 +19,11 @@ public class BaseFrame extends JFrame{
 	public RoomManagement rmv;
 	public LeaderView lv;
 	public MemberView mv;
+
+	public LoginController loginController;
 	
     public BaseFrame(){
-    	lgv=new LogInView(this);
+    	lgv=new LoginView(this);
     	suv=new SignUp(this);
     	uif=new UserInfo(this);
     	dbv=new DashBoard(this);
@@ -29,6 +31,8 @@ public class BaseFrame extends JFrame{
     	rmv=new RoomManagement(this);
     	lv=new LeaderView(this);
     	mv=new MemberView(this);
+    	
+    	loginController=new LoginController();
     	
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	
