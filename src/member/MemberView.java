@@ -1,37 +1,66 @@
 package member;
 
-import java.util.Scanner;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.JOptionPane;
 
-public class MemberView {
-    private MemberController controller;
+import app.*;
 
-    public MemberView() {
-        this.controller = new MemberController();
+public class MemberView extends UserView {
+	String date, time;
+	JPanel addTimePanel = new JPanel();
+	
+    public MemberView(BaseFrame baseframe){
+    	super(baseframe);
+    	setLayout(null);
+    	
+    	infoLabel.setText("회의 가능 시간 등록");
+    	
+    	JButton logoutBtn = new JButton("로그아웃");
+    	
+    	JLabel addTimeLabel = new JLabel("가능 시간 등록");
+    	addTimeLabel.setFont(new Font("굴림", Font.PLAIN, 30));
+    	addTimeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    	addTimeLabel.setBounds(470, 135, 396, 47);
+    	userPanel.add(addTimeLabel);
+    	
+    	JButton dateChoiceBtn = new JButton("날짜 선택");
+    	dateChoiceBtn.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			date=JOptionPane.showInputDialog("2000-01-01 형식으로 날짜를 입력하세요",null);
+    			addTime(new JLabel(), date);
+    		}
+    	});
+    	dateChoiceBtn.setBounds(470, 192, 192, 23);
+    	userPanel.add(dateChoiceBtn);
+    	
+    	JButton timeChoiceBtn = new JButton("시간 선택");
+    	timeChoiceBtn.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			if(date==null) {
+    				JOptionPane.showMessageDialog(null, "날짜를 먼저 입력하세요","", JOptionPane.ERROR_MESSAGE);
+    			}
+    			else {
+        			time=JOptionPane.showInputDialog("00:00-23:59 형식으로 가능한 시간을 입력하세요", null);
+        			addTime(new JLabel(), time);
+        			time=null;
+        			date=null;
+    			}
+    		}
+    	});
+    	timeChoiceBtn.setBounds(674, 192, 192, 23);
+    	userPanel.add(timeChoiceBtn);
+  
+    	addTimePanel.setBorder(new LineBorder(new Color(0, 0, 0), 5));
+    	addTimePanel.setBounds(470, 225, 396, 267);
+    	userPanel.add(addTimePanel);
+    	addTimePanel.setLayout(new GridLayout(0, 2, 0, 4));
     }
-
-    public void displayMenu() {
-        Scanner scanner = new Scanner(System.in);
-        int choice;
-
-        do {
-            System.out.println("\n[Member 기능 선택]");
-            System.out.println("1. 회의 가능 시간 등록");
-            System.out.println("0. 뒤로가기 / 종료");
-            System.out.print("선택: ");
-            choice = scanner.nextInt();
-            scanner.nextLine(); // 개행 제거
-
-            switch (choice) {
-                case 1:
-                    controller.registerTimePreference();
-                    break;
-                case 0:
-                    System.out.println("돌아갑니다.");
-                    break;
-                default:
-                    System.out.println("올바른 번호를 선택해주세요.");
-            }
-
-        } while (choice != 0);
+    public void addTime(JLabel label, String time) {
+    	label.setText(time);
+    	addTimePanel.add(label);
+    	addTimePanel.revalidate();
     }
 }
