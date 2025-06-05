@@ -20,15 +20,21 @@ public class MemberView extends UserView {
 		this.baseframe = baseframe;
 		this.controller = new MemberController();
 
-		setLayout(null);
+		//setLayout(null);
+		//안내 라벨 설정
 		infoLabel.setText("회의 가능 시간 등록");
-
+		
+		//사용자 정보 버튼 추가
+		add(userInfoBtn);
+		
+		//안내 라벨 추가
 		JLabel addTimeLabel = new JLabel("가능 시간 등록");
 		addTimeLabel.setFont(new Font("굴림", Font.PLAIN, 30));
 		addTimeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		addTimeLabel.setBounds(470, 135, 396, 47);
 		userPanel.add(addTimeLabel);
 
+		//날짜 선택
 		JButton dateChoiceBtn = new JButton("날짜 선택");
 		dateChoiceBtn.setBounds(470, 192, 192, 23);
 		dateChoiceBtn.addActionListener(e -> {
@@ -38,7 +44,8 @@ public class MemberView extends UserView {
 			}
 		});
 		userPanel.add(dateChoiceBtn);
-
+		
+		//시간 선택
 		JButton timeChoiceBtn = new JButton("시간 선택");
 		timeChoiceBtn.setBounds(674, 192, 192, 23);
 		timeChoiceBtn.addActionListener(e -> handleTimeInput());
@@ -88,7 +95,8 @@ public class MemberView extends UserView {
 			time = null;
 		}
 	}
-
+	
+	//textArea에 추가한 시간 보이도록
 	public void addTime(JLabel label, String timeText) {
 		label.setText(timeText);
 		addTimePanel.add(label);

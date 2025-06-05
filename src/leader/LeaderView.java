@@ -24,21 +24,25 @@ public class LeaderView extends UserView {
 	public LeaderView(BaseFrame baseframe){
 		super(baseframe);
 		this.controller = new LeaderController();
-
-		infoLabel.setText("회의실 검색");
-
+		
+		//안내 라벨 추가
+		infoLabel.setText("회의실 예약");
+		
+		//안내 라벨
 		JLabel infoLabel_2 = new JLabel("예약 가능한 회의실 목록");
 		infoLabel_2.setFont(new Font("굴림", Font.PLAIN, 24));
 		infoLabel_2.setBounds(12, 10, 276, 50);
 		userPanel.add(infoLabel_2);
-
+		
+		//예약 가능한 회의실 목록 출력 필드
 		enabledRoomListArea = new JTextArea();
 		enabledRoomListArea.setEditable(false);
 		enabledRoomListArea.setBorder(new LineBorder(Color.BLACK, 5));
 		JScrollPane enabledScroll = new JScrollPane(enabledRoomListArea);
 		enabledScroll.setBounds(12, 50, 500, 655);
 		userPanel.add(enabledScroll);
-
+		
+		//회의실 예약 버튼
 		JButton reserveRoomBtn = new JButton("회의실 예약하기");
 		reserveRoomBtn.addActionListener((ActionEvent e) -> {
 			String reservedRoomNumStr = JOptionPane.showInputDialog("예약할 회의실 번호를 입력하세요");
@@ -64,7 +68,8 @@ public class LeaderView extends UserView {
 		});
 		reserveRoomBtn.setBounds(605, 50, 177, 23);
 		userPanel.add(reserveRoomBtn);
-
+		
+		//현재 예약된 회의실 출력 필드
 		JLabel infoLabel_3 = new JLabel("예약된 회의실");
 		infoLabel_3.setFont(new Font("굴림", Font.PLAIN, 24));
 		infoLabel_3.setBounds(866, 10, 276, 50);
@@ -76,7 +81,8 @@ public class LeaderView extends UserView {
 		JScrollPane reservedScroll = new JScrollPane(reservedRoomListArea);
 		reservedScroll.setBounds(866, 50, 500, 655);
 		userPanel.add(reservedScroll);
-
+		
+		//예약 취소 버튼
 		JButton cancelReservationBtn = new JButton("회의실 예약 취소하기");
 		cancelReservationBtn.addActionListener((ActionEvent e) -> {
 			String deletedRoomNumStr = JOptionPane.showInputDialog("삭제할 회의실 번호를 입력하세요");
@@ -97,7 +103,8 @@ public class LeaderView extends UserView {
 		});
 		cancelReservationBtn.setBounds(605, 83, 177, 23);
 		userPanel.add(cancelReservationBtn);
-
+		
+		//회의실 검색 버튼
 		JButton searchRoomBtn = new JButton("회의실 검색하기");
 		searchRoomBtn.addActionListener((ActionEvent e) -> {
 			loadAvailableRooms();

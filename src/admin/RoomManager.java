@@ -35,7 +35,7 @@ public class RoomManager {
 
     // 회의실 등록
     public boolean addRoom(Room room) {
-        String sql = "INSERT INTO room (name, capacity) VALUES (?, ?)";
+        String sql = "INSERT INTO db2025_room (name, capacity) VALUES (?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -68,7 +68,7 @@ public class RoomManager {
 
     // 회의실 이름 수정
     public boolean updateRoomName(int id, String name) {
-        String sql = "UPDATE room SET name = ? WHERE id = ?";
+        String sql = "UPDATE db2025_room SET name = ? WHERE id = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -85,7 +85,7 @@ public class RoomManager {
 
     // 회의실 수용인원 수정
     public boolean updateRoomCapacity(int id, int capacity) {
-        String sql = "UPDATE room SET capacity = ? WHERE id = ?";
+        String sql = "UPDATE db2025_room SET capacity = ? WHERE id = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

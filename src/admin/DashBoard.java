@@ -26,4 +26,6 @@ public class DashBoard extends AdminView {
 		label.setBorder(border);
 		adminPanel.add(label);
 	}
+	
+	
 }

@@ -5,6 +5,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import app.*;
+import leader.LeaderView;
+import member.MemberView;
 
 public class LoginView extends JPanel {
 	private JTextField textField;
@@ -50,7 +52,15 @@ public class LoginView extends JPanel {
 				//로그인 함수 실행
 				String username=textField.getText();
 				String password=textField_1.getText();
-				LoginResult loginResult=baseframe.loginController.login(username, password);
+				baseframe.loginResult=baseframe.loginController.login(username, password);
+				if(baseframe.loginResult.isSuccess()) {
+					JOptionPane.showMessageDialog(null, baseframe.loginResult.getMessage());
+					baseframe.uif=new UserInfo(baseframe);
+					baseframe.lv=new LeaderView(baseframe);
+					baseframe.mv=new MemberView(baseframe);
+					baseframe.change(baseframe.panel, baseframe.uif);
+				}
+				else JOptionPane.showMessageDialog(null, baseframe.loginResult.getMessage(), "Message", JOptionPane.ERROR_MESSAGE);
 			}
 		});
 		login_btn.setForeground(new Color(255, 255, 255));

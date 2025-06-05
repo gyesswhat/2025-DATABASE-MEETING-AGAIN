@@ -56,7 +56,7 @@ public class LeaderController {
     }
 
     public boolean reserveRoom(int roomId, int peopleCount, int userId) {
-        String sql = "INSERT INTO reservation (room_id, user_id, people_count) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO db2025_reservation (room_id, user_id, people_count) VALUES (?, ?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

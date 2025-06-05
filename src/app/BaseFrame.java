@@ -25,18 +25,20 @@ public class BaseFrame extends JFrame {
 	private User currentUser;
 	
 	public LoginController loginController;
+	public LoginResult loginResult;
+	public RegisterResult registerResult;
 
 	public BaseFrame() {
 		loginController=new LoginController();
 		
 		lgv = new LoginView(this);
 		suv = new SignUp(this);
-		uif = new UserInfo(this);
+		//uif = new UserInfo(this);
 		dbv = new DashBoard(this);
 		adv = new RoomAdd(this);
 		rmv = new RoomManagement(this);
-		lv = new LeaderView(this);
-		mv = new MemberView(this);
+		//lv = new LeaderView(this);
+		//mv = new MemberView(this);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1440, 1008);
@@ -82,6 +84,7 @@ public class BaseFrame extends JFrame {
 		now.removeAll();
 		now.setLayout(null);
 		changed.setBounds(0, 0, 1402, 803);
+		changed.setLayout(null);
 		now.add(changed);
 		revalidate();
 		repaint();

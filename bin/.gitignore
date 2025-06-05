@@ -1,7 +1,6 @@
-/admin/
-/app/
-/common/
-/leader/
 /login/
+/app/
+/admin/
+/leader/
+/common/
 /member/
-/system/

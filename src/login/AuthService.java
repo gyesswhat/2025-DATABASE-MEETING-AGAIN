@@ -41,7 +41,8 @@ public class AuthService {
                         User user = new User();
                         user.setId(rs.getInt("id"));
                         user.setUsername(rs.getString("username"));
-                        user.setPassword(storedHash);
+                        //user.setPassword(storedHash); //여기 비번 바꾸는게 어려워서 이렇게 고침
+                        user.setPassword(password);
                         user.setRole(rs.getString("role"));
                         user.setTeamId(rs.getInt("team_id"));
                         return new LoginResult(true, "로그인 성공", user);
@@ -92,7 +93,7 @@ public class AuthService {
         String hashedPwd = hashPassword(password.trim());
 
         // 4) 사용자 INSERT
-        String sql = "INSERT INTO user(username, password, role, team_id) VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO db2025_user(username, password, role, team_id) VALUES(?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
