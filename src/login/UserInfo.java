@@ -33,6 +33,7 @@ public class UserInfo extends UserView {
 
 	public UserInfo(BaseFrame baseframe) {
 		super(baseframe);
+
 		this.baseframe = baseframe;
 		authService=new AuthService();
 		// 안내 라벨
@@ -224,5 +225,6 @@ public class UserInfo extends UserView {
 			e.printStackTrace();
 			return false;
 		}
+
 	}
 }

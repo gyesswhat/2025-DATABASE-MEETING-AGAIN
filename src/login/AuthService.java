@@ -23,9 +23,6 @@ public class AuthService {
             return new LoginResult(false, "사용자명과 비밀번호를 입력해주세요.");
         }
 
-        // 1) 비밀번호 해시
-        String hashedPwd = hashPassword(password.trim());
-
         // 2) DB 조회 (user 테이블)
         String sql = "SELECT id, username, password, role, team_id " +
                 "FROM db2025_user WHERE username = ?";
@@ -35,14 +32,21 @@ public class AuthService {
             pstmt.setString(1, username.trim());
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    String storedHash = rs.getString("password");
-                    if (storedHash.equals(hashedPwd)) {
+                    String storedPassword = rs.getString("password");
+                    boolean passwordMatch = false;
+                    if (storedPassword.equals("pass") && password.trim().equals("pass")) {
+                        passwordMatch = true;
+                    } else {
+                        String hashedPwd = hashPassword(password.trim());
+                        passwordMatch = storedPassword.equals(hashedPwd);
+                    }
+
+                    if (passwordMatch) {
                         // 로그인 성공 시 User 객체 생성
                         User user = new User();
                         user.setId(rs.getInt("id"));
                         user.setUsername(rs.getString("username"));
-                        //user.setPassword(storedHash); //여기 비번 바꾸는게 어려워서 이렇게 고침
-                        user.setPassword(password);
+                        user.setPassword(password); // 평문 저장
                         user.setRole(rs.getString("role"));
                         user.setTeamId(rs.getInt("team_id"));
                         return new LoginResult(true, "로그인 성공", user);
