@@ -90,7 +90,12 @@ public class AuthService {
         // 2) 팀명 → team_id 매핑 (team 테이블 조회)
         Integer teamId = findTeamIdByName(teamName.trim());
         if (teamId == null) {
-            return new RegisterResult(false, "존재하지 않는 팀명입니다.");
+        	/*리더가 존재하지 않는 팀으로 회원가입 시도할 시 새로운 팀 생성*/
+        	if(role.equals("leader")) {
+        		if(insertTeam(teamName)) return new RegisterResult(true, "새로운 팀이 생성되었습니다");
+        		else return new RegisterResult(false, "새로운 팀 생성에 실패했습니다");
+        	}
+        	else return new RegisterResult(false, "존재하지 않는 팀명입니다.");
         }
 
         // 3) 비밀번호 해시
@@ -120,8 +125,25 @@ public class AuthService {
             return new RegisterResult(false, "알 수 없는 오류가 발생했습니다.");
         }
     }
+    
+    /*새로운 팀 생성*/
+    private boolean insertTeam(String teamName) {
+		// TODO Auto-generated method stub
+    	String sql="INSERT INTO db2025_team(name) VALUES (?)";
+    	 try (Connection conn = DBUtil.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+    		 pstmt.setString(1, teamName);
+    		 return pstmt.executeUpdate()>0;
+    		 
+    	 }catch (SQLException e) {
+             e.printStackTrace();
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+         return false;
+	}
 
-    /**
+	/**
      * 사용자명 중복 여부 확인
      * @param username 검사할 사용자명
      * @return true (= 이미 존재 ), false (= 사용 가능 )
@@ -189,6 +211,21 @@ public class AuthService {
             throw new RuntimeException("비밀번호 해시 중 오류 발생: " + e.getMessage());
         }
     }
+    
+    /*비밀번호 변경*/
+	public boolean updatePassword(User user) {
+		String sql="UPDATE db2025_user SET password=? WHERE username=?";
+		try (Connection conn = DBUtil.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql);){
+			stmt.setString(1, user.getPassword());
+			stmt.setString(2, hashPassword(user.getUsername()));
+			return stmt.executeUpdate()>0;
+			
+		}catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	public static User getCurrentUser() {
 		// TODO Auto-generated method stub

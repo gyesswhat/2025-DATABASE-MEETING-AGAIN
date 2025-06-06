@@ -29,119 +29,92 @@ public class LeaderView extends UserView {
 		super(baseframe);
 		this.baseframe = baseframe;
 		this.controller = new LeaderController();
+		
+		//안내 라벨 추가
+		infoLabel.setText("회의실 예약");
+		
+		//안내 라벨
+		JLabel infoLabel_2 = new JLabel("예약 가능한 회의실 목록");
+		infoLabel_2.setFont(new Font("굴림", Font.PLAIN, 24));
+		infoLabel_2.setBounds(12, 10, 276, 50);
+		userPanel.add(infoLabel_2);
+		
+		//예약 가능한 회의실 목록 출력 필드
+		enabledRoomListArea = new JTextArea();
+		enabledRoomListArea.setEditable(false);
+		enabledRoomListArea.setBorder(new LineBorder(Color.BLACK, 5));
+		JScrollPane enabledScroll = new JScrollPane(enabledRoomListArea);
+		enabledScroll.setBounds(12, 50, 500, 655);
+		userPanel.add(enabledScroll);
+		
+		//회의실 예약 버튼
+		JButton reserveRoomBtn = new JButton("회의실 예약하기");
+		reserveRoomBtn.addActionListener((ActionEvent e) -> {
+			String reservedRoomNumStr = JOptionPane.showInputDialog("예약할 회의실 번호를 입력하세요");
+			String people = JOptionPane.showInputDialog("예약 인원을 입력하세요");
 
-		try {
-			//안내 라벨 변경
-			infoLabel.setText("회의실 예약");
+			try {
+				int reservedRoomNum = Integer.parseInt(reservedRoomNumStr);
+				int reservedPeopleNum = Integer.parseInt(people);
+				int userId = baseframe.getCurrentUser().getId(); // 현재 로그인한 사용자
 
-			// ================ 회의실 예약 섹션 ================
+				boolean success = controller.reserveRoom(reservedRoomNum, reservedPeopleNum, userId);
+				if (success) {
+					JOptionPane.showMessageDialog(null, "예약 성공!");
+					loadAvailableRooms();
+					loadReservedRooms();
+				} else {
+					JOptionPane.showMessageDialog(null, "예약 실패");
+				}
+			} catch (NumberFormatException ex) {
+				JOptionPane.showMessageDialog(null, "숫자를 입력하세요");
+			} catch (NullPointerException ex) {
+				JOptionPane.showMessageDialog(null, "로그인이 필요합니다");
+			}
+		});
+		reserveRoomBtn.setBounds(605, 50, 177, 23);
+		userPanel.add(reserveRoomBtn);
+		
+		//현재 예약된 회의실 출력 필드
+		JLabel infoLabel_3 = new JLabel("예약된 회의실");
+		infoLabel_3.setFont(new Font("굴림", Font.PLAIN, 24));
+		infoLabel_3.setBounds(866, 10, 276, 50);
+		userPanel.add(infoLabel_3);
 
-			// 회의실 예약 제목
-			JLabel roomManagementLabel = new JLabel("회의실 예약");
-			roomManagementLabel.setFont(new Font("굴림", Font.BOLD, 20));
-			roomManagementLabel.setBounds(12, 320, 150, 30);
-			userPanel.add(roomManagementLabel);
+		reservedRoomListArea = new JTextArea();
+		reservedRoomListArea.setEditable(false);
+		reservedRoomListArea.setBorder(new LineBorder(Color.BLACK, 5));
+		JScrollPane reservedScroll = new JScrollPane(reservedRoomListArea);
+		reservedScroll.setBounds(866, 50, 500, 655);
+		userPanel.add(reservedScroll);
+		
+		//예약 취소 버튼
+		JButton cancelReservationBtn = new JButton("회의실 예약 취소하기");
+		cancelReservationBtn.addActionListener((ActionEvent e) -> {
+			String deletedRoomNumStr = JOptionPane.showInputDialog("삭제할 회의실 번호를 입력하세요");
 
-			//안내 라벨
-			JLabel infoLabel_2 = new JLabel("예약 가능한 회의실 목록");
-			infoLabel_2.setFont(new Font("굴림", Font.PLAIN, 16));
-			infoLabel_2.setBounds(12, 350, 276, 30);
-			userPanel.add(infoLabel_2);
+			try {
+				int deletedRoomNum = Integer.parseInt(deletedRoomNumStr);
+				boolean success = controller.cancelReservation(deletedRoomNum);
 
-			//예약 가능한 회의실 목록 출력 필드
-			enabledRoomListArea = new JTextArea();
-			enabledRoomListArea.setEditable(false);
-			enabledRoomListArea.setBorder(new LineBorder(Color.BLACK, 5));
-			JScrollPane enabledScroll = new JScrollPane(enabledRoomListArea);
-			enabledScroll.setBounds(12, 385, 500, 280);
-			userPanel.add(enabledScroll);
+				if (success) {
+					JOptionPane.showMessageDialog(null, "예약 취소 완료!");
+					loadAvailableRooms();
+					loadReservedRooms();
+				} else {
+					JOptionPane.showMessageDialog(null, "예약 취소 실패");
+				}
+			} catch (NumberFormatException ex) {
+				JOptionPane.showMessageDialog(null, "숫자를 입력하세요");
+			}
+		});
+		cancelReservationBtn.setBounds(605, 83, 177, 23);
+		userPanel.add(cancelReservationBtn);
+		
+		//회의실 검색 버튼
+		JButton searchRoomBtn = new JButton("회의실 검색하기");
+		searchRoomBtn.addActionListener((ActionEvent e) -> {
 
-			//회의실 예약 버튼
-			JButton reserveRoomBtn = new JButton("회의실 예약하기");
-			reserveRoomBtn.addActionListener((ActionEvent e) -> {
-				handleRoomReservation();
-			});
-			reserveRoomBtn.setBounds(605, 385, 177, 23);
-			userPanel.add(reserveRoomBtn);
-
-			//현재 예약된 회의실 출력 필드
-			JLabel infoLabel_3 = new JLabel("예약된 회의실");
-			infoLabel_3.setFont(new Font("굴림", Font.PLAIN, 16));
-			infoLabel_3.setBounds(866, 350, 276, 30);
-			userPanel.add(infoLabel_3);
-
-			reservedRoomListArea = new JTextArea();
-			reservedRoomListArea.setEditable(false);
-			reservedRoomListArea.setBorder(new LineBorder(Color.BLACK, 5));
-			JScrollPane reservedScroll = new JScrollPane(reservedRoomListArea);
-			reservedScroll.setBounds(866, 385, 500, 280);
-			userPanel.add(reservedScroll);
-
-			//예약 취소 버튼
-			JButton cancelReservationBtn = new JButton("회의실 예약 취소하기");
-			cancelReservationBtn.addActionListener((ActionEvent e) -> {
-				handleReservationCancellation();
-			});
-			cancelReservationBtn.setBounds(605, 418, 177, 23);
-			userPanel.add(cancelReservationBtn);
-
-			//회의실 검색 버튼
-			JButton searchRoomBtn = new JButton("회의실 목록 새로고침");
-			searchRoomBtn.addActionListener((ActionEvent e) -> {
-				// 회의실 목록을 새로고침
-				loadAvailableRooms();
-				loadReservedRooms();
-				JOptionPane.showMessageDialog(this, "회의실 목록이 새로고침되었습니다.",
-						"새로고침 완료", JOptionPane.INFORMATION_MESSAGE);
-			});
-			searchRoomBtn.setBounds(605, 451, 177, 23);
-			userPanel.add(searchRoomBtn);
-
-			// ================ 팀 관리 섹션 ================
-
-			// 팀 관리 제목
-			JLabel teamManagementLabel = new JLabel("팀 관리");
-			teamManagementLabel.setFont(new Font("굴림", Font.BOLD, 20));
-			teamManagementLabel.setBounds(12, 150, 100, 30);
-			userPanel.add(teamManagementLabel);
-
-			// 팀원 목록 표시 영역
-			JLabel teamMemberLabel = new JLabel("팀원 목록");
-			teamMemberLabel.setFont(new Font("굴림", Font.PLAIN, 16));
-			teamMemberLabel.setBounds(12, 185, 100, 25);
-			userPanel.add(teamMemberLabel);
-
-			teamMemberArea = new JTextArea();
-			teamMemberArea.setEditable(false);
-			teamMemberArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-			teamMemberArea.setBorder(new LineBorder(Color.DARK_GRAY, 2));
-			JScrollPane teamScroll = new JScrollPane(teamMemberArea);
-			teamScroll.setBounds(12, 215, 500, 120);
-			userPanel.add(teamScroll);
-
-			// 팀 관리 버튼들
-			JButton addMemberBtn = new JButton("팀원 추가");
-			addMemberBtn.addActionListener((ActionEvent e) -> {
-				handleAddTeamMember();
-			});
-			addMemberBtn.setBounds(605, 215, 177, 25);
-			userPanel.add(addMemberBtn);
-
-			JButton removeMemberBtn = new JButton("팀원 제거");
-			removeMemberBtn.addActionListener((ActionEvent e) -> {
-				handleRemoveTeamMember();
-			});
-			removeMemberBtn.setBounds(605, 250, 177, 25);
-			userPanel.add(removeMemberBtn);
-
-			JButton refreshTeamBtn = new JButton("팀원 목록 새로고침");
-			refreshTeamBtn.addActionListener((ActionEvent e) -> {
-				loadTeamMembers();
-			});
-			refreshTeamBtn.setBounds(605, 285, 177, 25);
-			userPanel.add(refreshTeamBtn);
-
-			// 초기 데이터 로딩
 			loadAvailableRooms();
 			loadReservedRooms();
 			loadTeamMembers(); // 권한 확인은 loadTeamMembers() 내부에서 처리

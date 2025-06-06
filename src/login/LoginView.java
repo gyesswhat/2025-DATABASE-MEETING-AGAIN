@@ -49,50 +49,21 @@ public class LoginView extends JPanel {
 		JButton login_btn = new JButton("로그인");
 		login_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					//로그인 함수 실행
-					String username=textField.getText();
-					String password=textField_1.getText();
-					baseframe.loginResult=baseframe.loginController.login(username, password);
 
-					if(baseframe.loginResult.isSuccess()) {
-						JOptionPane.showMessageDialog(null, baseframe.loginResult.getMessage());
+				//로그인 함수 실행
+				String username=textField.getText();
+				String password=textField_1.getText();
+				baseframe.loginResult=baseframe.loginController.login(username, password);
+				if(baseframe.loginResult.isSuccess()) {
+					JOptionPane.showMessageDialog(null, baseframe.loginResult.getMessage());
+					baseframe.setCurrentUser(baseframe.loginResult.getUser());
+					baseframe.uif=new UserInfo(baseframe);
+					baseframe.lv=new LeaderView(baseframe);
+					baseframe.mv=new MemberView(baseframe);
+					if(baseframe.getCurrentUser().getRole().equals("admin"))
+						baseframe.change(baseframe.panel, baseframe.dbv);
+					else baseframe.change(baseframe.panel, baseframe.uif);
 
-						// 로그인된 사용자 정보 설정
-						baseframe.setCurrentUser(baseframe.loginResult.getUser());
-
-						// 사용자별 View 초기화
-						try {
-							baseframe.uif = new UserInfo(baseframe);
-							baseframe.lv = new LeaderView(baseframe);
-							baseframe.mv = new MemberView(baseframe);
-
-							// 헤더 버튼들 활성화
-							baseframe.enableUserButtons();
-
-							// 사용자 정보 화면으로 이동
-							baseframe.change(baseframe.panel, baseframe.uif);
-
-						} catch (Exception ex) {
-							System.err.println("View 초기화 중 오류 발생: " + ex.getMessage());
-							ex.printStackTrace();
-
-							// 오류 발생 시 기본 화면으로
-							JOptionPane.showMessageDialog(null,
-									"일부 기능 초기화 중 오류가 발생했습니다. 기본 기능만 사용 가능합니다.",
-									"Warning", JOptionPane.WARNING_MESSAGE);
-						}
-
-					} else {
-						JOptionPane.showMessageDialog(null, baseframe.loginResult.getMessage(),
-								"Message", JOptionPane.ERROR_MESSAGE);
-					}
-				} catch (Exception ex) {
-					System.err.println("로그인 처리 중 오류 발생: " + ex.getMessage());
-					ex.printStackTrace();
-					JOptionPane.showMessageDialog(null,
-							"로그인 처리 중 오류가 발생했습니다: " + ex.getMessage(),
-							"Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
