@@ -176,16 +176,15 @@ public class UserInfo extends UserView {
 
 	public List<User> getAllMembers() {
 		List<User> list = new ArrayList<>();
-		String sql = "SELECT * FROM db2025_user WHERE team_id =?;";
+		String sql = "SELECT * FROM db2025_team_user_view WHERE team_id =?;";
 		try (Connection conn = DBUtil.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sql);) {
 			stmt.setInt(1, user.getTeamId());
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				User u = new User();
-				u.setId(rs.getInt("id"));
+				u.setId(rs.getInt("user_id"));
 				u.setUsername(rs.getString("username"));
-				u.setPassword(rs.getString("password"));
 				u.setRole(rs.getString("role"));
 				u.setTeamId(rs.getInt("team_id"));
 				list.add(u);

@@ -1,10 +1,16 @@
 package member;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import app.BaseFrame;
 import common.model.UserView;
+import common.util.DBUtil;
 import common.model.User;
 import java.util.*;
 import java.util.List;
@@ -46,7 +52,7 @@ public class MemberView extends UserView {
 		addTimeArea.setBounds(470, 225, 396, 267);
 		addTimeArea.setEditable(false);
 		userPanel.add(addTimeArea);
-		loadTime(user.getId());
+		loadTime(user.getUsername());
 	}
 	
 	private void handleTimeInput() {
@@ -74,7 +80,7 @@ public class MemberView extends UserView {
 		try {
 			boolean saved = controller.saveTimePreference(currentUser, date, start, end, 1);
 			if (saved) {
-				loadTime(user.getId());
+				loadTime(user.getUsername());
 				JOptionPane.showMessageDialog(null, "회의 가능 시간이 등록되었습니다.");
 			} else {
 				JOptionPane.showMessageDialog(null, "저장에 실패했습니다.");
@@ -88,14 +94,22 @@ public class MemberView extends UserView {
 		}
 	}
 
-	public void loadTime(int userid) {
+	public void loadTime(String username) {
 		// 사용자의 정보를 하나의 string으로 만들어서 리턴
-		List<TimePreference> times = controller.getAllByUser(userid);
-		StringBuilder sb = new StringBuilder();
-		for (TimePreference t : times) {
-			sb.append(t.getStartTime()).append("\t").append(t.getEndTime()).append("\n");
+		String sql="SELECT startTime, endTime FROM DB2025_timeslot_summary_view WHERE username=?";
+		try (Connection conn = DBUtil.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql);){
+			stmt.setString(1, username);
+			ResultSet rs=stmt.executeQuery();
+			StringBuilder sb = new StringBuilder();;
+			while (rs.next()) {
+				sb.append(rs.getString("startTime")).append("\t").append(rs.getString("endTime")).append("\n");
+			}
+			addTimeArea.setText(sb.toString());
+			
+		}catch (SQLException e) {
+			e.printStackTrace();
 		}
-		addTimeArea.setText(sb.toString());
 	}
 	
 	//textArea에 추가한 시간 보이도록
