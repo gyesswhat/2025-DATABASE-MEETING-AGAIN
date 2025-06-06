@@ -102,7 +102,6 @@ public class UserInfo extends UserView {
 		// 팀원 정보 출력 필드
 		membersInfoArea = new JTextArea();
 		membersInfoArea.setEditable(false);
-		membersInfoArea.setEditable(false);
 		TitledBorder membersborder = new TitledBorder("팀원 정보");
 		membersborder.setTitlePosition(TitledBorder.ABOVE_TOP);
 		membersborder.setTitleJustification(TitledBorder.LEADING);

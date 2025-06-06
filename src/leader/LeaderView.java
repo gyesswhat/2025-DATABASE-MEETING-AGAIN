@@ -56,6 +56,7 @@ public class LeaderView extends UserView {
 				boolean success = controller.reserveRoom(reservedRoomNum, reservedPeopleNum, userId);
 				if (success) {
 					JOptionPane.showMessageDialog(null, "예약 성공!");
+					loadAvailableRooms();
 					loadReservedRooms();
 				} else {
 					JOptionPane.showMessageDialog(null, "예약 실패");
@@ -93,6 +94,7 @@ public class LeaderView extends UserView {
 
 				if (success) {
 					JOptionPane.showMessageDialog(null, "예약 취소 완료!");
+					loadAvailableRooms();
 					loadReservedRooms();
 				} else {
 					JOptionPane.showMessageDialog(null, "예약 취소 실패");

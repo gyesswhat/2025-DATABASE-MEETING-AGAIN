@@ -6,17 +6,18 @@ import javax.swing.border.LineBorder;
 import app.BaseFrame;
 import common.model.UserView;
 import common.model.User;
+import java.util.*;
+import java.util.List;
 
 public class MemberView extends UserView {
 	private String date, time;
 	private final BaseFrame baseframe;
-	private final JPanel addTimePanel = new JPanel();
-	private final MemberController controller;
+	private final JTextArea addTimeArea = new JTextArea();
+	private MemberController controller= new MemberController();
 	
 	public MemberView(BaseFrame baseframe) {
 		super(baseframe);
 		this.baseframe = baseframe;
-		this.controller = new MemberController();
 		
 		//setLayout(null);
 		//안내 라벨 설정
@@ -33,26 +34,19 @@ public class MemberView extends UserView {
 		userPanel.add(addTimeLabel);
 		
 		//날짜 선택
-		JButton dateChoiceBtn = new JButton("날짜 선택");
-		dateChoiceBtn.setBounds(470, 192, 192, 23);
+		JButton dateChoiceBtn = new JButton("날짜 및 시간 선택");
+		dateChoiceBtn.setBounds(470, 192, 394, 23);
 		dateChoiceBtn.addActionListener(e -> {
 			date = JOptionPane.showInputDialog("2000-01-01 형식으로 날짜를 입력하세요", null);
-			if (date != null && !date.isBlank()) {
-				addTime(new JLabel(), "날짜: " + date);
-			}
+			handleTimeInput();
 		});
 		userPanel.add(dateChoiceBtn);
-		
-		//시간 선택
-		JButton timeChoiceBtn = new JButton("시간 선택");
-		timeChoiceBtn.setBounds(674, 192, 192, 23);
-		timeChoiceBtn.addActionListener(e -> handleTimeInput());
-		userPanel.add(timeChoiceBtn);
-		
-		addTimePanel.setBorder(new LineBorder(Color.BLACK, 5));
-		addTimePanel.setBounds(470, 225, 396, 267);
-		addTimePanel.setLayout(new GridLayout(0, 2, 0, 4));
-		userPanel.add(addTimePanel);
+
+		addTimeArea.setBorder(new LineBorder(Color.BLACK, 5));
+		addTimeArea.setBounds(470, 225, 396, 267);
+		addTimeArea.setEditable(false);
+		userPanel.add(addTimeArea);
+		loadTime(user.getId());
 	}
 	
 	private void handleTimeInput() {
@@ -80,7 +74,7 @@ public class MemberView extends UserView {
 		try {
 			boolean saved = controller.saveTimePreference(currentUser, date, start, end, 1);
 			if (saved) {
-				addTime(new JLabel(), date + " " + time);
+				loadTime(user.getId());
 				JOptionPane.showMessageDialog(null, "회의 가능 시간이 등록되었습니다.");
 			} else {
 				JOptionPane.showMessageDialog(null, "저장에 실패했습니다.");
@@ -93,12 +87,17 @@ public class MemberView extends UserView {
 			time = null;
 		}
 	}
+
+	public void loadTime(int userid) {
+		// 사용자의 정보를 하나의 string으로 만들어서 리턴
+		List<TimePreference> times = controller.getAllByUser(userid);
+		StringBuilder sb = new StringBuilder();
+		for (TimePreference t : times) {
+			sb.append(t.getStartTime()).append("\t").append(t.getEndTime()).append("\n");
+		}
+		addTimeArea.setText(sb.toString());
+	}
 	
 	//textArea에 추가한 시간 보이도록
-	public void addTime(JLabel label, String timeText) {
-		label.setText(timeText);
-		addTimePanel.add(label);
-		addTimePanel.revalidate();
-		addTimePanel.repaint();
-	}
+	
 }

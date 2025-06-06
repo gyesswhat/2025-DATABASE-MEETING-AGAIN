@@ -9,7 +9,7 @@ public class TimePreferenceManager {
 
     // 회의 가능 시간 등록
     public boolean save(TimePreference tp) {
-        String sql = "INSERT INTO timeslot (user_id, team_id, start_time, end_time, priority) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO db2025_timeslot (user_id, team_id, starTtime, endTime, priority) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

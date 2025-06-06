@@ -2,9 +2,10 @@ package member;
 
 import common.model.User;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class MemberController {
-    private final TimePreferenceManager preferenceManager = new TimePreferenceManager();
+    private TimePreferenceManager preferenceManager = new TimePreferenceManager();
 
     public boolean saveTimePreference(User user, String date, String startStr, String endStr, int priority) {
         try {
@@ -19,4 +20,9 @@ public class MemberController {
             return false;
         }
     }
+
+	public List<TimePreference> getAllByUser(int userId) {
+		// TODO Auto-generated method stub
+		return preferenceManager.getAllByUser(userId);
+	}
 }
