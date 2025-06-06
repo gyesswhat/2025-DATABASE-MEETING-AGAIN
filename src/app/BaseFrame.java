@@ -23,6 +23,7 @@ public class BaseFrame extends JFrame {
 	public MemberView mv;
 
 	private User currentUser;
+
 	
 	public LoginController loginController;
 	public LoginResult loginResult;
@@ -39,6 +40,7 @@ public class BaseFrame extends JFrame {
 		rmv = new RoomManagement(this);
 		//lv = new LeaderView(this);
 		//mv = new MemberView(this);
+
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1440, 1008);
@@ -79,12 +81,14 @@ public class BaseFrame extends JFrame {
 		btn.addActionListener(e -> change(panel, view));
 		headerPanel.add(btn);
 	}
+
     
     public void change(Container now, Container changed) {
 		now.removeAll();
 		now.setLayout(null);
 		changed.setBounds(0, 0, 1402, 803);
 		changed.setLayout(null);
+
 		now.add(changed);
 		revalidate();
 		repaint();

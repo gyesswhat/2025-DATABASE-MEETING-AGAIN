@@ -5,7 +5,6 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.List;
 import java.lang.StringBuilder;
-
 import app.BaseFrame;
 import common.model.Room;
 
@@ -15,6 +14,7 @@ public class RoomManagement extends AdminView {
 	public RoomManagement(BaseFrame baseframe) {
 		super(baseframe);
 		RoomManager roomManager=new RoomManager();
+
 
 		JLabel infoLabel = new JLabel("회의실 목록");
 		infoLabel.setFont(new Font("굴림", Font.PLAIN, 24));
@@ -71,6 +71,18 @@ public class RoomManagement extends AdminView {
 			}
 		});
 		adminPanel.add(updateRoomBtn);
+	}
+
+	private void loadRoomList() {
+		List<Room> rooms = new RoomManager().getAllRooms();
+		StringBuilder sb = new StringBuilder();
+		for (Room r : rooms) {
+			sb.append("ID: ").append(r.getId())
+					.append(" | 이름: ").append(r.getName())
+					.append(" | 인원: ").append(r.getCapacity())
+					.append("\n");
+		}
+		roomListArea.setText(sb.toString());
 	}
 
 	private void loadRoomList() {
