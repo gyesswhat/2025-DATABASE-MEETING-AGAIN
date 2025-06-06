@@ -4,16 +4,16 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.List;
-import java.lang.StringBuilder;
 import app.BaseFrame;
 import common.model.Room;
 
 public class RoomManagement extends AdminView {
 	private JTextArea roomListArea;
+	private RoomManager roomManager;
 
 	public RoomManagement(BaseFrame baseframe) {
 		super(baseframe);
-		RoomManager roomManager=new RoomManager();
+		roomManager = new RoomManager();
 
 
 		JLabel infoLabel = new JLabel("회의실 목록");
@@ -34,7 +34,7 @@ public class RoomManagement extends AdminView {
 		addRoomBtn.setBounds(518, 50, 126, 23);
 		addRoomBtn.addActionListener(e -> baseframe.change(baseframe.panel, baseframe.adv));
 		adminPanel.add(addRoomBtn);
-		
+
 		JButton deleteRoomBtn = new JButton("회의실 삭제");
 		deleteRoomBtn.setBounds(518, 77, 126, 23);
 		deleteRoomBtn.addActionListener(e -> {
@@ -46,7 +46,7 @@ public class RoomManagement extends AdminView {
 			else JOptionPane.showMessageDialog(null, "회의실 삭제에 실패했습니다", "Message", JOptionPane.ERROR_MESSAGE);
 		});
 		adminPanel.add(deleteRoomBtn);
-		
+
 		JButton updateRoomBtn = new JButton("회의실 수정");
 		updateRoomBtn.setBounds(518, 104, 126, 23);
 		updateRoomBtn.addActionListener(e -> {
@@ -74,7 +74,7 @@ public class RoomManagement extends AdminView {
 	}
 
 	private void loadRoomList() {
-		List<Room> rooms = new RoomManager().getAllRooms();
+		List<Room> rooms = roomManager.getAllRooms();
 		StringBuilder sb = new StringBuilder();
 		for (Room r : rooms) {
 			sb.append("ID: ").append(r.getId())
@@ -85,15 +85,4 @@ public class RoomManagement extends AdminView {
 		roomListArea.setText(sb.toString());
 	}
 
-	private void loadRoomList() {
-		List<Room> rooms = new RoomManager().getAllRooms();
-		StringBuilder sb = new StringBuilder();
-		for (Room r : rooms) {
-			sb.append("ID: ").append(r.getId())
-					.append(" | 이름: ").append(r.getName())
-					.append(" | 인원: ").append(r.getCapacity())
-					.append("\n");
-		}
-		roomListArea.setText(sb.toString());
-	}
 }
