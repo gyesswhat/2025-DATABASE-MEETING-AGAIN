@@ -55,10 +55,13 @@ public class LoginView extends JPanel {
 				baseframe.loginResult=baseframe.loginController.login(username, password);
 				if(baseframe.loginResult.isSuccess()) {
 					JOptionPane.showMessageDialog(null, baseframe.loginResult.getMessage());
+					baseframe.setCurrentUser(baseframe.loginResult.getUser());
 					baseframe.uif=new UserInfo(baseframe);
 					baseframe.lv=new LeaderView(baseframe);
 					baseframe.mv=new MemberView(baseframe);
-					baseframe.change(baseframe.panel, baseframe.uif);
+					if(baseframe.getCurrentUser().getRole().equals("admin"))
+						baseframe.change(baseframe.panel, baseframe.dbv);
+					else baseframe.change(baseframe.panel, baseframe.uif);
 				}
 				else JOptionPane.showMessageDialog(null, baseframe.loginResult.getMessage(), "Message", JOptionPane.ERROR_MESSAGE);
 			}
