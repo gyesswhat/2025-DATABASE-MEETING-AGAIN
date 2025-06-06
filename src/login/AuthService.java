@@ -28,7 +28,7 @@ public class AuthService {
 
         // 2) DB 조회 (user 테이블)
         String sql = "SELECT id, username, password, role, team_id " +
-                "FROM user WHERE username = ?";
+                "FROM db2025_user WHERE username = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -41,7 +41,8 @@ public class AuthService {
                         User user = new User();
                         user.setId(rs.getInt("id"));
                         user.setUsername(rs.getString("username"));
-                        user.setPassword(storedHash);
+                        //user.setPassword(storedHash); //여기 비번 바꾸는게 어려워서 이렇게 고침
+                        user.setPassword(password);
                         user.setRole(rs.getString("role"));
                         user.setTeamId(rs.getInt("team_id"));
                         return new LoginResult(true, "로그인 성공", user);
@@ -92,7 +93,7 @@ public class AuthService {
         String hashedPwd = hashPassword(password.trim());
 
         // 4) 사용자 INSERT
-        String sql = "INSERT INTO user(username, password, role, team_id) VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO db2025_user(username, password, role, team_id) VALUES(?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -122,7 +123,7 @@ public class AuthService {
      * @return true (= 이미 존재 ), false (= 사용 가능 )
      */
     public boolean isUsernameExists(String username) {
-        String sql = "SELECT COUNT(*) AS cnt FROM user WHERE username = ?";
+        String sql = "SELECT COUNT(*) AS cnt FROM db2025_user WHERE username = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -148,7 +149,7 @@ public class AuthService {
      * @return team_id (존재하지 않으면 null 반환)
      */
     private Integer findTeamIdByName(String teamName) {
-        String sql = "SELECT id FROM team WHERE name = ?";
+        String sql = "SELECT id FROM db2025_team WHERE name = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -184,4 +185,9 @@ public class AuthService {
             throw new RuntimeException("비밀번호 해시 중 오류 발생: " + e.getMessage());
         }
     }
+
+	public static User getCurrentUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

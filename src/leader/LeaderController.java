@@ -11,7 +11,8 @@ public class LeaderController {
 
     public List<Room> getAvailableRooms() {
         List<Room> list = new ArrayList<>();
-        String sql = "SELECT * FROM room WHERE id NOT IN (SELECT room_id FROM reservation)";
+        String sql = "SELECT * FROM db2025_room WHERE id NOT IN (SELECT room_id FROM db2025_reservation)";
+
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -34,7 +35,8 @@ public class LeaderController {
 
     public List<Room> getReservedRooms() {
         List<Room> list = new ArrayList<>();
-        String sql = "SELECT r.* FROM room r JOIN reservation res ON r.id = res.room_id";
+        String sql = "SELECT r.* FROM db2025_room r JOIN db2025_reservation res ON r.id = res.room_id";
+
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -56,7 +58,9 @@ public class LeaderController {
     }
 
     public boolean reserveRoom(int roomId, int peopleCount, int userId) {
-        String sql = "INSERT INTO reservation (room_id, user_id, people_count) VALUES (?, ?, ?)";
+
+        String sql = "INSERT INTO db2025_reservation (room_id, user_id, people_count) VALUES (?, ?, ?)";
+
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -74,7 +78,9 @@ public class LeaderController {
     }
 
     public boolean cancelReservation(int roomId) {
-        String sql = "DELETE FROM reservation WHERE room_id = ?";
+
+        String sql = "DELETE FROM db2025_reservation WHERE room_id = ?";
+
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
