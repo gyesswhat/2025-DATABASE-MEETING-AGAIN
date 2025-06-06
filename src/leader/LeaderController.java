@@ -32,17 +32,13 @@ public class LeaderController {
     // 예약 테이블이 없는 경우 생성
     private void createReservationTableIfNotExists() {
         if (!tableExists("db2025_reservation")) {
-            String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS db2025_reservation (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    room_id INT NOT NULL,
-                    user_id INT NOT NULL,
-                    people_count INT NOT NULL,
-                    reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (room_id) REFERENCES db2025_room(id),
-                    FOREIGN KEY (user_id) REFERENCES db2025_user(id)
-                )
-                """;
+            String createTableSQL ="CREATE TABLE IF NOT EXISTS db2025_reservation ("
+            		+ "id INT AUTO_INCREMENT PRIMARY KEY, "
+            		+ "room_id INT NOT NULL, user_id INT NOT NULL, "
+            		+ "people_count INT NOT NULL,"
+            		+ "reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+            		+ "FOREIGN KEY (room_id) REFERENCES db2025_room(id),"
+            		+ "FOREIGN KEY (user_id) REFERENCES db2025_user(id))";
 
             try (Connection conn = DBUtil.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {

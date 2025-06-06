@@ -148,6 +148,12 @@ public class MemberView extends UserView {
 		}
 	}
 
+	private boolean isValidTime(String start) {
+		// TODO Auto-generated method stub
+		
+		return false;
+	}
+
 	public void loadTime(String username) {
 		// 사용자의 정보를 하나의 string으로 만들어서 리턴
 		String sql="SELECT startTime, endTime FROM DB2025_timeslot_summary_view WHERE username=?";

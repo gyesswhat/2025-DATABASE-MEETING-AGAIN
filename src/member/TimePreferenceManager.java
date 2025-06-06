@@ -24,19 +24,16 @@ public class TimePreferenceManager {
         String tableName = "db2025_timeslot";
 
         if (!tableExists(tableName)) {
-            String createTableSQL = """
-                CREATE TABLE IF NOT EXISTS db2025_timeslot (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    user_id INT NOT NULL,
-                    team_id INT NOT NULL,
-                    start_time DATETIME NOT NULL,
-                    end_time DATETIME NOT NULL,
-                    priority INT DEFAULT 1,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (user_id) REFERENCES db2025_user(id),
-                    FOREIGN KEY (team_id) REFERENCES db2025_team(id)
-                )
-                """;
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS db2025_timeslot ( "
+            		+ "id INT AUTO_INCREMENT PRIMARY KEY,"
+            		+ "user_id INT NOT NULL,"
+            		+ "team_id INT NOT NULL,"
+            		+ "start_time DATETIME NOT NULL,"
+            		+ "end_time DATETIME NOT NULL,"
+            		+ "priority INT DEFAULT 1,"
+            		+ "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
+            		+ "FOREIGN KEY (user_id) REFERENCES db2025_user(id),"
+            		+ "FOREIGN KEY (team_id) REFERENCES db2025_team(id))";
 
             try (Connection conn = DBUtil.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {

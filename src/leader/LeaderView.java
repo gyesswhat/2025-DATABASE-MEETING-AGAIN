@@ -113,22 +113,25 @@ public class LeaderView extends UserView {
 		
 		//회의실 검색 버튼
 		JButton searchRoomBtn = new JButton("회의실 검색하기");
-		searchRoomBtn.addActionListener((ActionEvent e) -> {
+		searchRoomBtn.addActionListener((ActionEvent e) ->{
+			try {
+				loadAvailableRooms();
+				loadReservedRooms();
+				loadTeamMembers(); // 권한 확인은 loadTeamMembers() 내부에서 처리
 
-			loadAvailableRooms();
-			loadReservedRooms();
-			loadTeamMembers(); // 권한 확인은 loadTeamMembers() 내부에서 처리
+			}catch (Exception e1) {
+				System.err.println("LeaderView 초기화 중 오류: " + e1.getMessage());
+				e1.printStackTrace();
 
-		} catch (Exception e) {
-			System.err.println("LeaderView 초기화 중 오류: " + e.getMessage());
-			e.printStackTrace();
-
-			// 오류 발생 시 기본 메시지 표시
-			JLabel errorLabel = new JLabel("회의실 예약 기능을 사용할 수 없습니다.");
-			errorLabel.setBounds(12, 100, 400, 30);
-			errorLabel.setForeground(Color.RED);
-			userPanel.add(errorLabel);
-		}
+				// 오류 발생 시 기본 메시지 표시
+				JLabel errorLabel = new JLabel("회의실 예약 기능을 사용할 수 없습니다.");
+				errorLabel.setBounds(12, 100, 400, 30);
+				errorLabel.setForeground(Color.RED);
+				userPanel.add(errorLabel);
+			}
+		});
+		searchRoomBtn.setBounds(605, 113, 177, 23);
+		userPanel.add(searchRoomBtn);
 	}
 
 	private void handleRoomReservation() {
