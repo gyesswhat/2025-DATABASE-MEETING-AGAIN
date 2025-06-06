@@ -46,7 +46,9 @@ public class UserView extends JPanel{
 				public void actionPerformed(ActionEvent e) {
 					// 로그아웃 처리
 					baseframe.disableUserButtons();
-					baseframe.change(baseframe.panel, baseframe.lgv);
+					baseframe.lgv.textField.setText("");
+					baseframe.lgv.textField_1.setText("");
+					JOptionPane.showMessageDialog(null, "로그아웃되었습니다.");
 				}
 			});
 			add(logoutBtn);

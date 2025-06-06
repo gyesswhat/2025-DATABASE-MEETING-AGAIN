@@ -28,8 +28,6 @@ public class RoomManagement extends AdminView {
 		scrollPane.setBounds(12, 50, 460, 407);
 		adminPanel.add(scrollPane);
 
-		loadRoomList();
-
 		JButton addRoomBtn = new JButton("회의실 추가");
 		addRoomBtn.setBounds(518, 50, 126, 23);
 		addRoomBtn.addActionListener(e -> baseframe.change(baseframe.panel, baseframe.adv));
@@ -71,9 +69,10 @@ public class RoomManagement extends AdminView {
 			}
 		});
 		adminPanel.add(updateRoomBtn);
+		loadRoomList();
 	}
 
-	private void loadRoomList() {
+	public void loadRoomList() {
 		List<Room> rooms = roomManager.getAllRooms();
 		StringBuilder sb = new StringBuilder();
 		for (Room r : rooms) {

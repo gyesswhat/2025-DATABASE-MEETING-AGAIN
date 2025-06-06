@@ -9,8 +9,8 @@ import leader.LeaderView;
 import member.MemberView;
 
 public class LoginView extends JPanel {
-	private JTextField textField;
-	private JTextField textField_1;
+	public JTextField textField;
+	public JTextField textField_1;
 
 	public LoginView(BaseFrame baseframe) {
 
@@ -95,6 +95,6 @@ public class LoginView extends JPanel {
 			}
 		});
 		logout_btn.setBounds(532, 554, 279, 21);
-		add(logout_btn);
+		//add(logout_btn);
 	}
 }

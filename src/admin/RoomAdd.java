@@ -44,7 +44,7 @@ public class RoomAdd extends AdminView {
 			Room room = new Room(name, capacity);
 			new RoomManager().addRoom(room);
 			JOptionPane.showMessageDialog(null, "회의실이 등록되었습니다.");
-
+			baseframe.rmv.loadRoomList();
 			baseframe.change(baseframe.panel, baseframe.rmv);
 		});
 		adminPanel.add(saveBtn);

@@ -63,36 +63,11 @@ public class UserInfo extends UserView {
 		roleborder.setTitleJustification(TitledBorder.LEADING);
 		roleInfo.setBorder(roleborder);
 
-		// 비밀번호 변경 버튼
-		JButton pwChangeBtn = new JButton("비밀번호 변경하기");
-		pwChangeBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int yes = JOptionPane.showConfirmDialog(null, "비밀번호를 변경하시겠습니까?", "confirm", JOptionPane.YES_NO_OPTION);
-				if (yes == 0) {
-					String pwNow = JOptionPane.showInputDialog("현재 비밀번호를 입력하세요");
-					if (pwNow.equals(user.getPassword())) {
-						String pwNew = JOptionPane.showInputDialog("새로운 비밀번호를 입력하세요");
-						if (pwNew != null) {
-							user.setPassword(pwNew);
-							if(authService.updatePassword(user)) JOptionPane.showMessageDialog(null, "비밀번호가 변경되었습니다");
-							else JOptionPane.showMessageDialog(null, "비밀번호 변경에 실패했습니다", "Message",
-									JOptionPane.WARNING_MESSAGE);
-						} else
-							JOptionPane.showMessageDialog(null, "비밀번호 변경이 취소되었습니다", "Message",
-									JOptionPane.WARNING_MESSAGE);
-					} else
-						JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다", "Message", JOptionPane.WARNING_MESSAGE);
-				} else
-					JOptionPane.showMessageDialog(null, "비밀번호 변경이 취소되었습니다", "Message", JOptionPane.WARNING_MESSAGE);
-			}
-		});
-		pwChangeBtn.setBounds(500, 280, 300, 40);
 
 		// 컴포넌트 추가
 		userPanel.add(nameInfo);
 		userPanel.add(teamInfo);
 		userPanel.add(roleInfo);
-		userPanel.add(pwChangeBtn);
 
 		// 여기부터는 리더에게만 보이는 컴포넌트
 		if (user.getRole().equals("leader"))

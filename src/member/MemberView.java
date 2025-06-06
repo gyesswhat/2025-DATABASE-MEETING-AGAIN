@@ -148,10 +148,14 @@ public class MemberView extends UserView {
 		}
 	}
 
-	private boolean isValidTime(String start) {
-		// TODO Auto-generated method stub
+	private boolean isValidTime(String time) {
+		String[] parts = time.split(":");
+		int hour = Integer.parseInt(parts[0]);
+		int minute = Integer.parseInt(parts[1]);
+		if(hour<0 || hour >24) return false;
+		if(minute<0 || minute>60) return false;
 		
-		return false;
+		return true;
 	}
 
 	public void loadTime(String username) {
