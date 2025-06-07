@@ -54,6 +54,66 @@ public class MemberView extends UserView {
 		addTimeArea.setEditable(false);
 		userPanel.add(addTimeArea);
 		loadTime(user.getUsername());
+
+		// 확정된 회의 시간 영역 UI 추가
+		JLabel fixedMeetingLabel = new JLabel("확정된 회의 일정");
+		fixedMeetingLabel.setFont(new Font("굴림", Font.PLAIN, 30));
+		fixedMeetingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		fixedMeetingLabel.setBounds(470, 510, 396, 47);
+		userPanel.add(fixedMeetingLabel);
+
+		JTextArea fixedMeetingArea = new JTextArea();
+		fixedMeetingArea.setBorder(new LineBorder(Color.BLACK, 5));
+		fixedMeetingArea.setEditable(false);
+		fixedMeetingArea.setBounds(470, 550, 396, 150);
+		userPanel.add(fixedMeetingArea);
+
+		// 확정된 회의 일정 불러오기
+		loadConfirmedMeetings(fixedMeetingArea);
+	}
+
+	private void loadConfirmedMeetings(JTextArea area) {
+		User currentUser = baseframe.getCurrentUser();
+		if (currentUser == null) {
+			area.setText("로그인이 필요합니다.");
+			return;
+		}
+
+		String sql = """
+		SELECT m.id AS meeting_id, t.startTime, t.endTime, r.name AS room_name
+		FROM db2025_meeting_participants mp
+		JOIN db2025_meeting m ON mp.meeting_id = m.id
+		JOIN db2025_timeslot t ON m.timeSlot_id = t.id
+		JOIN db2025_room r ON m.room = r.id
+		WHERE mp.user_id = ?
+		ORDER BY t.startTime ASC
+	""";
+
+		try (Connection conn = DBUtil.getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, currentUser.getId());
+			ResultSet rs = stmt.executeQuery();
+
+			StringBuilder sb = new StringBuilder();
+			while (rs.next()) {
+				sb.append("회의 ID: ").append(rs.getInt("meeting_id"))
+						.append(" | 시간: ").append(rs.getString("startTime"))
+						.append(" ~ ").append(rs.getString("endTime"))
+						.append(" | 회의실: ").append(rs.getString("room_name"))
+						.append("\n");
+			}
+
+			if (sb.length() == 0) {
+				area.setText("참여 예정 회의가 없습니다.");
+			} else {
+				area.setText(sb.toString());
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			area.setText("회의 정보를 불러올 수 없습니다.");
+		}
 	}
 
 	private void handleTimeInput() {

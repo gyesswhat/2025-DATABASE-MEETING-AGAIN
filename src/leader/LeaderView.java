@@ -172,9 +172,21 @@ public class LeaderView extends UserView {
 				
 				//티임슬롯 추가하고
 				MemberController controller=new MemberController();
+				// (1) 회의 시간 저장 (timeslot)
 				controller.saveTimePreference(user, meetingDate, meetingStartTime, meetingEndTime, 0);
-				//그거로 미팅 추가하고
-				//member_view에서 확인할 수 있도록 하면 끝
+
+				// (2) 확정된 timeslot_id 가져오기
+				int timeslotId = controller.getLatestTimeSlotId(user.getId(), meetingDate, meetingStartTime, meetingEndTime);
+				int roomId = Integer.parseInt(meetingRoom);
+
+				// (3) meeting 저장 및 id 반환
+				int meetingId = controller.createMeeting(timeslotId, roomId);
+
+				// (4) 회의 참여자 등록
+				controller.inviteTeamMembersToMeeting(meetingId, user.getTeamId());
+
+				// (5) 알림
+				JOptionPane.showMessageDialog(null, "회의 시간이 확정되었습니다!");
 				
 			}
 		});
