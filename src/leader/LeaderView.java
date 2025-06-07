@@ -3,6 +3,7 @@ package leader;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -17,6 +18,8 @@ import app.BaseFrame;
 import common.model.Room;
 import common.model.UserView;
 import leader.TeamManagementService.TeamOperationResult;
+import member.MemberController;
+import member.TimePreferenceManager;
 
 public class LeaderView extends UserView {
 	private JTextArea enabledRoomListArea;
@@ -24,30 +27,32 @@ public class LeaderView extends UserView {
 	private JTextArea teamMemberArea;
 	private final LeaderController controller;
 	private final BaseFrame baseframe;
+	private JTextArea memberTimeListArea;
+	private JTextArea fixedMeetingListArea;
 
-	public LeaderView(BaseFrame baseframe){
+	public LeaderView(BaseFrame baseframe) {
 		super(baseframe);
 		this.baseframe = baseframe;
 		this.controller = new LeaderController();
-		
-		//안내 라벨 추가
+
+		// 안내 라벨 추가
 		infoLabel.setText("회의실 예약");
-		
-		//안내 라벨
+
+		// 안내 라벨
 		JLabel infoLabel_2 = new JLabel("예약 가능한 회의실 목록");
 		infoLabel_2.setFont(new Font("굴림", Font.PLAIN, 24));
 		infoLabel_2.setBounds(12, 10, 276, 50);
 		userPanel.add(infoLabel_2);
-		
-		//예약 가능한 회의실 목록 출력 필드
+
+		// 예약 가능한 회의실 목록 출력 필드
 		enabledRoomListArea = new JTextArea();
 		enabledRoomListArea.setEditable(false);
 		enabledRoomListArea.setBorder(new LineBorder(Color.BLACK, 5));
 		JScrollPane enabledScroll = new JScrollPane(enabledRoomListArea);
-		enabledScroll.setBounds(12, 50, 500, 655);
+		enabledScroll.setBounds(12, 50, 500, 300);
 		userPanel.add(enabledScroll);
-		
-		//회의실 예약 버튼
+
+		// 회의실 예약 버튼
 		JButton reserveRoomBtn = new JButton("회의실 예약하기");
 		reserveRoomBtn.addActionListener((ActionEvent e) -> {
 			String reservedRoomNumStr = JOptionPane.showInputDialog("예약할 회의실 번호를 입력하세요");
@@ -74,8 +79,8 @@ public class LeaderView extends UserView {
 		});
 		reserveRoomBtn.setBounds(605, 50, 177, 23);
 		userPanel.add(reserveRoomBtn);
-		
-		//현재 예약된 회의실 출력 필드
+
+		// 현재 예약된 회의실 출력 필드
 		JLabel infoLabel_3 = new JLabel("예약된 회의실");
 		infoLabel_3.setFont(new Font("굴림", Font.PLAIN, 24));
 		infoLabel_3.setBounds(866, 10, 276, 50);
@@ -85,10 +90,10 @@ public class LeaderView extends UserView {
 		reservedRoomListArea.setEditable(false);
 		reservedRoomListArea.setBorder(new LineBorder(Color.BLACK, 5));
 		JScrollPane reservedScroll = new JScrollPane(reservedRoomListArea);
-		reservedScroll.setBounds(866, 50, 500, 655);
+		reservedScroll.setBounds(866, 50, 500, 300);
 		userPanel.add(reservedScroll);
-		
-		//예약 취소 버튼
+
+		// 예약 취소 버튼
 		JButton cancelReservationBtn = new JButton("회의실 예약 취소하기");
 		cancelReservationBtn.addActionListener((ActionEvent e) -> {
 			String deletedRoomNumStr = JOptionPane.showInputDialog("삭제할 회의실 번호를 입력하세요");
@@ -110,16 +115,16 @@ public class LeaderView extends UserView {
 		});
 		cancelReservationBtn.setBounds(605, 83, 177, 23);
 		userPanel.add(cancelReservationBtn);
-		
-		//회의실 검색 버튼
+
+		// 회의실 검색 버튼
 		JButton searchRoomBtn = new JButton("회의실 검색하기");
-		searchRoomBtn.addActionListener((ActionEvent e) ->{
+		searchRoomBtn.addActionListener((ActionEvent e) -> {
 			try {
 				loadAvailableRooms();
 				loadReservedRooms();
 				loadTeamMembers(); // 권한 확인은 loadTeamMembers() 내부에서 처리
 
-			}catch (Exception e1) {
+			} catch (Exception e1) {
 				System.err.println("LeaderView 초기화 중 오류: " + e1.getMessage());
 				e1.printStackTrace();
 
@@ -132,21 +137,75 @@ public class LeaderView extends UserView {
 		});
 		searchRoomBtn.setBounds(605, 113, 177, 23);
 		userPanel.add(searchRoomBtn);
+
+		// 모든 팀원의 가능 시간 불러오기
+		JButton showMemberTimeBtn = new JButton("팀원 회의 가능 시간 확인");
+		showMemberTimeBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadMemberTime();
+			}
+		});
+		showMemberTimeBtn.setBounds(605, 143, 177, 23);
+		userPanel.add(showMemberTimeBtn);
+
+		JLabel infoLabel_4 = new JLabel("팀원 별 회의 가능 시간 목록");
+		infoLabel_4.setFont(new Font("굴림", Font.PLAIN, 24));
+		infoLabel_4.setBounds(12, 350, 400, 50);
+		userPanel.add(infoLabel_4);
+
+		// 예약 가능한 회의실 목록 출력 필드
+		memberTimeListArea = new JTextArea();
+		memberTimeListArea.setEditable(false);
+		memberTimeListArea.setBorder(new LineBorder(Color.BLACK, 5));
+		JScrollPane memberTimeScroll = new JScrollPane(memberTimeListArea);
+		memberTimeScroll.setBounds(12, 390, 500, 300);
+		userPanel.add(memberTimeScroll);
+
+		// 회의시간 확정하기
+		JButton fixMeetingTimeBtn = new JButton("회의시간 확정하기");
+		fixMeetingTimeBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String meetingDate=JOptionPane.showInputDialog("회의 날짜를 2000-01-01 형식으로 입력하세요");
+				String meetingStartTime=JOptionPane.showInputDialog("회의 시작 시간을 00:00 형식으로 입력하세요");
+				String meetingEndTime=JOptionPane.showInputDialog("회의 시작 시간을 00:00 형식으로 입력하세요");
+				String meetingRoom=JOptionPane.showInputDialog("예약한 회의실 번호를 입력하세요");
+				
+				//티임슬롯 추가하고
+				MemberController controller=new MemberController();
+				controller.saveTimePreference(user, meetingDate, meetingStartTime, meetingEndTime, 0);
+				//그거로 미팅 추가하고
+				//member_view에서 확인할 수 있도록 하면 끝
+				
+			}
+		});
+		fixMeetingTimeBtn.setBounds(605, 173, 177, 23);
+		userPanel.add(fixMeetingTimeBtn);
+
+		// 현재 예약된 회의 출력 필드
+		JLabel infoLabel_5 = new JLabel("예약된 회의");
+		infoLabel_5.setFont(new Font("굴림", Font.PLAIN, 24));
+		infoLabel_5.setBounds(866, 350, 276, 50);
+		userPanel.add(infoLabel_5);
+
+		fixedMeetingListArea = new JTextArea();
+		fixedMeetingListArea.setEditable(false);
+		fixedMeetingListArea.setBorder(new LineBorder(Color.BLACK, 5));
+		JScrollPane fixedTimeScroll = new JScrollPane(fixedMeetingListArea);
+		fixedTimeScroll.setBounds(866, 390, 500, 300);
+		userPanel.add(fixedTimeScroll);
 	}
 
 	private void handleRoomReservation() {
 		try {
-			String roomIdStr = JOptionPane.showInputDialog(this,
-					"예약할 회의실 번호를 입력하세요:",
-					"회의실 예약", JOptionPane.QUESTION_MESSAGE);
+			String roomIdStr = JOptionPane.showInputDialog(this, "예약할 회의실 번호를 입력하세요:", "회의실 예약",
+					JOptionPane.QUESTION_MESSAGE);
 
 			if (roomIdStr == null || roomIdStr.trim().isEmpty()) {
 				return; // 사용자가 취소했거나 빈 값 입력
 			}
 
-			String peopleCountStr = JOptionPane.showInputDialog(this,
-					"예약 인원을 입력하세요:",
-					"예약 인원", JOptionPane.QUESTION_MESSAGE);
+			String peopleCountStr = JOptionPane.showInputDialog(this, "예약 인원을 입력하세요:", "예약 인원",
+					JOptionPane.QUESTION_MESSAGE);
 
 			if (peopleCountStr == null || peopleCountStr.trim().isEmpty()) {
 				return;
@@ -156,15 +215,13 @@ public class LeaderView extends UserView {
 			int peopleCount = Integer.parseInt(peopleCountStr.trim());
 
 			if (peopleCount <= 0) {
-				JOptionPane.showMessageDialog(this, "예약 인원은 1명 이상이어야 합니다.",
-						"입력 오류", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, "예약 인원은 1명 이상이어야 합니다.", "입력 오류", JOptionPane.WARNING_MESSAGE);
 				return;
 			}
 
 			// 현재 로그인한 사용자 확인
 			if (baseframe.getCurrentUser() == null) {
-				JOptionPane.showMessageDialog(this, "로그인 정보가 없습니다. 다시 로그인해주세요.",
-						"인증 오류", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "로그인 정보가 없습니다. 다시 로그인해주세요.", "인증 오류", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -176,28 +233,23 @@ public class LeaderView extends UserView {
 				loadAvailableRooms();
 				loadReservedRooms();
 			} else {
-				JOptionPane.showMessageDialog(this,
-						"예약 실패했습니다. 회의실 번호를 확인해주세요.",
-						"예약 실패", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, "예약 실패했습니다. 회의실 번호를 확인해주세요.", "예약 실패", JOptionPane.WARNING_MESSAGE);
 			}
 
 		} catch (NumberFormatException ex) {
-			JOptionPane.showMessageDialog(this, "숫자를 정확히 입력해주세요.",
-					"입력 오류", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "숫자를 정확히 입력해주세요.", "입력 오류", JOptionPane.ERROR_MESSAGE);
 		} catch (Exception ex) {
 			System.err.println("회의실 예약 중 오류: " + ex.getMessage());
 			ex.printStackTrace();
-			JOptionPane.showMessageDialog(this,
-					"예약 처리 중 오류가 발생했습니다: " + ex.getMessage(),
-					"오류", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "예약 처리 중 오류가 발생했습니다: " + ex.getMessage(), "오류",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	private void handleReservationCancellation() {
 		try {
-			String roomIdStr = JOptionPane.showInputDialog(this,
-					"취소할 회의실 번호를 입력하세요:",
-					"예약 취소", JOptionPane.QUESTION_MESSAGE);
+			String roomIdStr = JOptionPane.showInputDialog(this, "취소할 회의실 번호를 입력하세요:", "예약 취소",
+					JOptionPane.QUESTION_MESSAGE);
 
 			if (roomIdStr == null || roomIdStr.trim().isEmpty()) {
 				return;
@@ -211,20 +263,17 @@ public class LeaderView extends UserView {
 				loadAvailableRooms();
 				loadReservedRooms();
 			} else {
-				JOptionPane.showMessageDialog(this,
-						"예약 취소에 실패했습니다. 예약된 회의실인지 확인해주세요.",
-						"취소 실패", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, "예약 취소에 실패했습니다. 예약된 회의실인지 확인해주세요.", "취소 실패",
+						JOptionPane.WARNING_MESSAGE);
 			}
 
 		} catch (NumberFormatException ex) {
-			JOptionPane.showMessageDialog(this, "숫자를 정확히 입력해주세요.",
-					"입력 오류", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "숫자를 정확히 입력해주세요.", "입력 오류", JOptionPane.ERROR_MESSAGE);
 		} catch (Exception ex) {
 			System.err.println("예약 취소 중 오류: " + ex.getMessage());
 			ex.printStackTrace();
-			JOptionPane.showMessageDialog(this,
-					"예약 취소 중 오류가 발생했습니다: " + ex.getMessage(),
-					"오류", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "예약 취소 중 오류가 발생했습니다: " + ex.getMessage(), "오류",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -238,9 +287,8 @@ public class LeaderView extends UserView {
 			} else {
 				StringBuilder sb = new StringBuilder();
 				for (Room room : rooms) {
-					sb.append("번호: ").append(room.getId())
-							.append(", 이름: ").append(room.getName())
-							.append(", 정원: ").append(room.getCapacity()).append("명\n");
+					sb.append("번호: ").append(room.getId()).append(", 이름: ").append(room.getName()).append(", 정원: ")
+							.append(room.getCapacity()).append("명\n");
 				}
 				enabledRoomListArea.setText(sb.toString());
 			}
@@ -260,9 +308,8 @@ public class LeaderView extends UserView {
 			} else {
 				StringBuilder sb = new StringBuilder();
 				for (Room room : rooms) {
-					sb.append("번호: ").append(room.getId())
-							.append(", 이름: ").append(room.getName())
-							.append(", 정원: ").append(room.getCapacity()).append("명\n");
+					sb.append("번호: ").append(room.getId()).append(", 이름: ").append(room.getName()).append(", 정원: ")
+							.append(room.getCapacity()).append("명\n");
 				}
 				reservedRoomListArea.setText(sb.toString());
 			}
@@ -308,23 +355,53 @@ public class LeaderView extends UserView {
 			}
 		}
 	}
+	
+	private void loadMemberTime() {
+		try {
+			// 권한 확인
+			if (baseframe.getCurrentUser() == null) {
+				if (memberTimeListArea != null) {
+					memberTimeListArea.setText("로그인 정보가 없습니다.");
+				}
+				return;
+			}
+
+			String userRole = baseframe.getCurrentUser().getRole();
+			if (!"leader".equals(userRole) && !"admin".equals(userRole)) {
+				if (memberTimeListArea != null) {
+					memberTimeListArea.setText("팀 관리 권한이 없습니다.");
+				}
+				return;
+			}
+
+			int teamId=baseframe.getCurrentUser().getTeamId();
+			String memberTimeInfo = controller.getTeamMemberTimeInfo(teamId);
+			if (memberTimeListArea != null) {
+				memberTimeListArea.setText(memberTimeInfo);
+			}
+
+		} catch (Exception e) {
+			System.err.println("팀원 목록 로딩 중 오류: " + e.getMessage());
+			if (teamMemberArea != null) {
+				teamMemberArea.setText("팀원 정보를 불러올 수 없습니다.\n오류: " + e.getMessage());
+			}
+		}
+	}
 
 	/**
 	 * 팀원 추가 처리
 	 */
 	private void handleAddTeamMember() {
 		try {
-			String username = JOptionPane.showInputDialog(this,
-					"추가할 팀원의 사용자명을 입력하세요:",
-					"팀원 추가", JOptionPane.QUESTION_MESSAGE);
+			String username = JOptionPane.showInputDialog(this, "추가할 팀원의 사용자명을 입력하세요:", "팀원 추가",
+					JOptionPane.QUESTION_MESSAGE);
 
 			if (username == null || username.trim().isEmpty()) {
 				return;
 			}
 
 			if (baseframe.getCurrentUser() == null) {
-				JOptionPane.showMessageDialog(this, "로그인 정보가 없습니다.",
-						"인증 오류", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "로그인 정보가 없습니다.", "인증 오류", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -332,19 +409,16 @@ public class LeaderView extends UserView {
 			TeamOperationResult result = controller.addTeamMember(username.trim(), teamId);
 
 			if (result.isSuccess()) {
-				JOptionPane.showMessageDialog(this, result.getMessage(),
-						"성공", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, result.getMessage(), "성공", JOptionPane.INFORMATION_MESSAGE);
 				loadTeamMembers(); // 팀원 목록 새로고침
 			} else {
-				JOptionPane.showMessageDialog(this, result.getMessage(),
-						"팀원 추가 실패", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, result.getMessage(), "팀원 추가 실패", JOptionPane.WARNING_MESSAGE);
 			}
 
 		} catch (Exception e) {
 			System.err.println("팀원 추가 중 오류: " + e.getMessage());
-			JOptionPane.showMessageDialog(this,
-					"팀원 추가 중 오류가 발생했습니다: " + e.getMessage(),
-					"오류", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "팀원 추가 중 오류가 발생했습니다: " + e.getMessage(), "오류",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -353,9 +427,8 @@ public class LeaderView extends UserView {
 	 */
 	private void handleRemoveTeamMember() {
 		try {
-			String username = JOptionPane.showInputDialog(this,
-					"제거할 팀원의 사용자명을 입력하세요:",
-					"팀원 제거", JOptionPane.QUESTION_MESSAGE);
+			String username = JOptionPane.showInputDialog(this, "제거할 팀원의 사용자명을 입력하세요:", "팀원 제거",
+					JOptionPane.QUESTION_MESSAGE);
 
 			if (username == null || username.trim().isEmpty()) {
 				return;
@@ -363,8 +436,7 @@ public class LeaderView extends UserView {
 
 			// 확인 대화상자
 			int confirmation = JOptionPane.showConfirmDialog(this,
-					"정말로 '" + username.trim() + "' 사용자를 팀에서 제거하시겠습니까?\n" +
-							"제거된 사용자는 무소속 상태가 되며, 관련 예약도 취소됩니다.",
+					"정말로 '" + username.trim() + "' 사용자를 팀에서 제거하시겠습니까?\n" + "제거된 사용자는 무소속 상태가 되며, 관련 예약도 취소됩니다.",
 					"팀원 제거 확인", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 			if (confirmation != JOptionPane.YES_OPTION) {
@@ -372,8 +444,7 @@ public class LeaderView extends UserView {
 			}
 
 			if (baseframe.getCurrentUser() == null) {
-				JOptionPane.showMessageDialog(this, "로그인 정보가 없습니다.",
-						"인증 오류", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "로그인 정보가 없습니다.", "인증 오류", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -381,21 +452,18 @@ public class LeaderView extends UserView {
 			TeamOperationResult result = controller.removeTeamMember(username.trim(), teamId);
 
 			if (result.isSuccess()) {
-				JOptionPane.showMessageDialog(this, result.getMessage(),
-						"성공", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, result.getMessage(), "성공", JOptionPane.INFORMATION_MESSAGE);
 				loadTeamMembers(); // 팀원 목록 새로고침
 				loadAvailableRooms(); // 회의실 목록도 새로고침 (예약 취소로 인해)
 				loadReservedRooms();
 			} else {
-				JOptionPane.showMessageDialog(this, result.getMessage(),
-						"팀원 제거 실패", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, result.getMessage(), "팀원 제거 실패", JOptionPane.WARNING_MESSAGE);
 			}
 
 		} catch (Exception e) {
 			System.err.println("팀원 제거 중 오류: " + e.getMessage());
-			JOptionPane.showMessageDialog(this,
-					"팀원 제거 중 오류가 발생했습니다: " + e.getMessage(),
-					"오류", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "팀원 제거 중 오류가 발생했습니다: " + e.getMessage(), "오류",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

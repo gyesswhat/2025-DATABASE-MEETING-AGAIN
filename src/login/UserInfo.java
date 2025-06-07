@@ -128,7 +128,7 @@ public class UserInfo extends UserView {
 			}
 		});
 		deleteMemberBtn.setBounds(500, 470, 300, 20);
-
+		
 		// 컴포넌트 추가
 		userPanel.add(scrollPane);
 		userPanel.add(addMemberBtn);
